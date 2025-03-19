@@ -1,30 +1,41 @@
 const { StatusCodes } = require('http-status-codes');
 const AppError = require('../errors/app-error');
 const {category}=require('../models');
+const logger = require('../config/logger-config');
 
 
 class CategoryRepository{
     async getCategories(){
         try {
-            const response=await category.findAll();
+            const response=await category.findAl();
+            if(response.length==0){
+                throw new AppError('cannot fetched the categories in DB',StatusCodes.BAD_REQUEST);
+            }
+            console.log(response)
             return response;
         } catch (error) {
             console.log(error);
-            throw error;
+             if(error instanceof AppError){
+                throw error;
+             }
+             throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
     async getCategory(id){
         try {
-            const response=await category.findByPk(id);
-            console.log(response);
+            const response=await category.findByP(id);
+            console.log("the response is",response);
             if(!response){
                 throw new AppError('cannot fetched the category in DB',StatusCodes.BAD_REQUEST);
             }
             return response;
         } catch (error) {
             console.log(error);
-            throw error;
+             if(error instanceof AppError){
+                throw error;
+             }
+             throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -38,7 +49,10 @@ class CategoryRepository{
                 return response;
             } catch (error) {
                 console.log(error);
-                throw error;
+                if(error instanceof AppError){
+                   throw error;
+                }
+                throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
             }
            
     }
@@ -54,7 +68,11 @@ class CategoryRepository{
             }
             return response;
         } catch (error) {
-            throw error;
+            console.log(error);
+             if(error instanceof AppError){
+                throw error;
+             }
+             throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
         }
        
     }

@@ -37,7 +37,7 @@ async function getCategories(req,res){
         console.log(error);
         ErrorReponse.error=error;
         ErrorReponse.message='Something went wrong';
-        return res.status(StatusCodes.BAD_REQUEST).json(ErrorReponse);
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
     }
 }
 
@@ -50,10 +50,10 @@ async function getCategory(req,res){
         }
         return res.status(StatusCodes.OK).json(SuccessReponse);
     } catch (error) {
-        console.log(error);
+        console.log("the error",error);
         ErrorReponse.error=error;
         ErrorReponse.message='Something went wrong';
-        return res.status(StatusCodes.BAD_REQUEST).json(ErrorReponse);
+        return res.status( error.statusCode ||StatusCodes.BAD_REQUEST).json(ErrorReponse);
     }
 }
 

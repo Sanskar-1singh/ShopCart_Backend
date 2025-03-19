@@ -23,6 +23,16 @@ class CategoryService{
                      console.log("the explanation",explanation);
                      throw new AppError(explanation,StatusCodes.BAD_REQUEST);
                 }
+                if(error.name=='SequelizeValidationError'){
+                    let explanation=[];
+                    console.log(error);
+                     error.errors.forEach((err)=>{
+                        explanation.push(err.message);
+                        explanation.push(err.value);
+                     });
+                     console.log("the explanation",explanation);
+                     throw new AppError(explanation,StatusCodes.BAD_REQUEST);
+                }
                 throw new AppError('something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
              }
             
@@ -42,6 +52,7 @@ class CategoryService{
     async getCategory(id){
         try {
             const response=await this.respository.getCategory(id);
+            console.log(response);
             return response;
         } catch (error) {
             throw error;
