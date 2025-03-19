@@ -17,6 +17,10 @@ class CategoryRepository{
     async getCategory(id){
         try {
             const response=await category.findByPk(id);
+            console.log(response);
+            if(!response){
+                throw new AppError('cannot fetched the category in DB',StatusCodes.BAD_REQUEST);
+            }
             return response;
         } catch (error) {
             console.log(error);
@@ -38,6 +42,24 @@ class CategoryRepository{
             }
            
     }
+
+    async destroy(categoryId){
+        try {
+            const response = await category.destroy({
+                where: { id: categoryId }
+            });
+            console.log(response);
+            if(response==0){
+                throw new AppError('cannot fetched the category in DB',StatusCodes.BAD_REQUEST);
+            }
+            return response;
+        } catch (error) {
+            throw error;
+        }
+       
+    }
+
+   
 }
 
 module.exports=CategoryRepository;

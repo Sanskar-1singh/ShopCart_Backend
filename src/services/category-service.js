@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const AppError = require("../errors/app-error");
+const { where } = require("sequelize");
 
 class CategoryService{
     constructor(respository){
@@ -29,14 +30,34 @@ class CategoryService{
       
 
     async getCategories(){
-        const response=await this.respository.getCategories();
-        return response;
+        try {
+            const response=await this.respository.getCategories();
+            return response;
+        } catch (error) {
+            throw error;
+        }
+       
     }
 
     async getCategory(id){
-        const response=await this.respository.getCategory(id);
-        return response;
+        try {
+            const response=await this.respository.getCategory(id);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+       
     }
+   
+    async destroy(id){
+        try { 
+            const response=await this.respository.destroy(id);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+   
 }
 
 module.exports=CategoryService;
