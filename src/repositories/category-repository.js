@@ -24,7 +24,7 @@ class CategoryRepository{
 
     async getCategory(id){
         try {
-            const response=await category.findByP(id);
+            const response=await category.findByPk(id);
             console.log("the response is",response);
             if(!response){
                 throw new AppError('cannot fetched the category in DB',StatusCodes.BAD_REQUEST);
