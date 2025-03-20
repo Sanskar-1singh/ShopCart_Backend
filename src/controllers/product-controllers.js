@@ -38,7 +38,7 @@ async function getProduct(req,res){
 
 async function getProducts(req,res){
     try {
-        const response=await productservice.getProducts();
+        const response=await productservice.getProducts(req.query);
         SuccessReponse.message='Successfully fetched all products';
         SuccessReponse.data=response
         return res.status(StatusCodes.OK).json(SuccessReponse);

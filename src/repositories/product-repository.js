@@ -17,17 +17,26 @@ class ProductRepository{
          
     }
 
-    async getProducts(){
+    async getProducts(limit,offset){
         try {
-            const response=await Product.findAll({
-                include:[
+            const queryOptions = {
+                include: [
                     {
-                        model:category,
-                        required:true,
+                        model: category,
+                        required: true,
                         as:'category_of_products'
                     }
                 ]
-            });
+            };
+
+            // Apply pagination only if limit is provided
+            if (!isNaN(limit)) {
+                queryOptions.limit = limit;
+                queryOptions.offset = offset || 0;
+            }
+    
+            const response = await Product.findAll(queryOptions);
+    
         if(response.length==0){
             throw new AppError('cannot find any product in inventory',StatusCodes.BAD_REQUEST);
         }
@@ -60,7 +69,7 @@ class ProductRepository{
 
     async destroyProduct(productId){
       try {
-        const response=await Product.destry({
+        const response=await Product.destroy({
             where:{
                 id:productId
             }

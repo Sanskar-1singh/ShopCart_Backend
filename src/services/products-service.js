@@ -37,9 +37,9 @@ class ProductService {
     }
   }
 
-  async getProducts() {
+  async getProducts(query) {
     try {
-      const response = await this.repository.getProducts();
+      const response = await this.repository.getProducts(+query.limit,+query.offset || 0);
       return response;
     } catch (error) {
       throw error;
