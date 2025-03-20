@@ -65,10 +65,25 @@ async function destroy(req,res){
     }
 }
 
+async function getProductForCategory(req,res){
+    try {
+        const response=await productservice.getProductWithCategory(req.params.id);
+        SuccessReponse.message='Successfully fetched the products with given category ID';
+        SuccessReponse.data=response
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        console.log("error is",error);
+        ErrorReponse.error=error;
+        ErrorReponse.message='Something went wrong';
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
 
 module.exports={
     createProducts,
     getProduct,
     getProducts,
-    destroy
+    destroy,
+    getProductForCategory
 }

@@ -7,7 +7,7 @@ const logger = require('../config/logger-config');
 class CategoryRepository{
     async getCategories(){
         try {
-            const response=await category.findAl();
+            const response=await category.findAll();
             if(response.length==0){
                 throw new AppError('cannot fetched the categories in DB',StatusCodes.BAD_REQUEST);
             }

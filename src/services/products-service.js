@@ -63,5 +63,14 @@ class ProductService {
         throw error;
     }
   }
+
+  async getProductWithCategory(id){
+    try {
+        const response=await this.repository.getProductForCategory(id);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+  }
 }
 module.exports = ProductService;

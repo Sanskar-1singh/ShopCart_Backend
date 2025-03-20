@@ -2,7 +2,8 @@ const {StatusCodes}=require('http-status-codes');
 const categoryService=require('../services/category-service');
 const categoryRepository=require('../repositories/category-repository');
 const { SuccessReponse, ErrorReponse } =require('../utils/response-structure');
-const categoryservice=new categoryService(new categoryRepository());
+const  ProductRepository=require('../repositories/product-repository');
+const categoryservice=new categoryService(new categoryRepository(),new ProductRepository());
 
 
 
@@ -72,9 +73,25 @@ async function destroyCategories(req,res){
     }
 }
 
+async function getProductwithcategory(req,res){
+    try {
+        const response=await categoryservice.getProductwithcategory(req.params.id);
+        SuccessReponse.message='Successfully fetched all the products with given categories id';
+        SuccessReponse.data=response;
+
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        console.log(error);
+        ErrorReponse.error=error;
+        ErrorReponse.message='Something went wrong';
+        return  res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
 module.exports={
     createCategory,
     getCategories,
     getCategory,
-    destroyCategories
+    destroyCategories,
+    getProductwithcategory
 }

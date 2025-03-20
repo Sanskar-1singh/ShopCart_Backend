@@ -3,9 +3,23 @@ const AppError = require("../errors/app-error");
 const { where } = require("sequelize");
 
 class CategoryService{
-    constructor(respository){
+    constructor(respository,productrepository){
         this.respository=respository;
+        this.productrepository=productrepository;
     }
+
+
+    async getProductwithcategory(id){
+        try {
+            const isExists=await this.getCategory(id);
+            const response=await this.productrepository.getProductForCategory(id);
+             return response;
+        } catch (error) {
+            throw error;
+        }
+       
+    } 
+
 
     async createCategory(category){
         try {

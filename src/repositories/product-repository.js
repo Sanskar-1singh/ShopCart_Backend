@@ -77,6 +77,26 @@ class ProductRepository{
       }
         
     }
+
+    async getProductForCategory(categoryId){
+        try {
+            const response=await Product.findAll({
+                where:{
+                    category_id:categoryId,
+                }
+            });
+            console.log(response)
+            if(response.length==0){
+                throw new AppError('cannot find products with category id',StatusCodes.BAD_REQUEST);
+            }
+            return response;
+        } catch (error) {
+            if(error instanceof AppError){
+                throw error;
+            }
+            throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
 
 module.exports=ProductRepository;
