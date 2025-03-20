@@ -50,8 +50,25 @@ async function getProducts(req,res){
     }
 }
 
+
+async function destroy(req,res){
+    try {
+        const response=await productservice.destroy(req.params.id);
+        SuccessReponse.message='Successfully deleted the products';
+        SuccessReponse.data=response
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        console.log("error is",error);
+        ErrorReponse.error=error;
+        ErrorReponse.message='Something went wrong';
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
+
 module.exports={
     createProducts,
     getProduct,
-    getProducts
+    getProducts,
+    destroy
 }

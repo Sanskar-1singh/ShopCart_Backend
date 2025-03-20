@@ -1,7 +1,8 @@
 const { StatusCodes } = require('http-status-codes');
 const AppError = require('../errors/app-error');
-const {Product}=require('../models');
+const {Product,category}=require('../models');
 const logger = require('../config/logger-config');
+const { Model } = require('sequelize');
 
 class ProductRepository{
 
@@ -18,7 +19,15 @@ class ProductRepository{
 
     async getProducts(){
         try {
-            const response=await Product.findAll();
+            const response=await Product.findAll({
+                include:[
+                    {
+                        model:category,
+                        required:true,
+                        as:'category_of_products'
+                    }
+                ]
+            });
         if(response.length==0){
             throw new AppError('cannot find any product in inventory',StatusCodes.BAD_REQUEST);
         }
@@ -50,12 +59,23 @@ class ProductRepository{
     }
 
     async destroyProduct(productId){
-        const response=await Product.destroy({
+      try {
+        const response=await Product.destry({
             where:{
                 id:productId
             }
         });
+        if(response==0){
+            throw new AppError('cannot find product to delete with given id  in inventory',StatusCodes.BAD_REQUEST);
+        }
         return response;
+      } catch (error) {
+        if(error instanceof AppError){
+            throw error;
+        }
+        throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
+      }
+        
     }
 }
 
