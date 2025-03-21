@@ -36,7 +36,7 @@ async function getUser(req,res){
     }
 }
 
-async function createUser(req,res){
+async function signup(req,res){
     try {
         const response=await userService.createUser(req.body);
         SuccessReponse.message="Successfully created User with given details";
@@ -71,6 +71,6 @@ async function destroyUser(req,res){
 module.exports={
     getUsers,
     getUser,
-    createUser,
+    signup,
     destroyUser
 }
