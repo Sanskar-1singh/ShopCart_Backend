@@ -80,10 +80,28 @@ async function getProductForCategory(req,res){
 }
 
 
+async function searchProduct(req,res){
+    try {
+        console.log("controller hit")
+        console.log(req.query.search)
+        const response=await productservice.searchProduct(req.query.search);
+        SuccessReponse.message='Successfully fetched the product with given search params';
+        SuccessReponse.data=response;
+
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        console.log("the error is",error);
+        ErrorReponse.error=error;
+        ErrorReponse.message='Something went wrong';
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
 module.exports={
     createProducts,
     getProduct,
     getProducts,
     destroy,
-    getProductForCategory
+    getProductForCategory,
+    searchProduct
 }

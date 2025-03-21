@@ -72,5 +72,14 @@ class ProductService {
         throw error;
     }
   }
+
+  async searchProduct(search){
+    try {
+      const response=await this.repository.searchProducts(search);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 module.exports = ProductService;
