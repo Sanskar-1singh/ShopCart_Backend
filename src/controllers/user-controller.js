@@ -52,6 +52,22 @@ async function signup(req,res){
     }
 }
 
+async function signin(req,res){
+    try {
+        const response=await userService.signinUser(req.body);
+        SuccessReponse.message='Successfully user has sign in with creadentials';
+        SuccessReponse.data=response;
+
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        console.log(error);
+        ErrorReponse.error=error;
+        ErrorReponse.message='Soemthing went wrong';
+
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
 async function destroyUser(req,res){
     try {
         const response=await userService.destroyUser(req.params.id);
@@ -72,5 +88,6 @@ module.exports={
     getUsers,
     getUser,
     signup,
-    destroyUser
+    destroyUser,
+    signin
 }

@@ -19,6 +19,27 @@ class UserRepository{
         }
     }
 
+    async getUserByemail(email){
+        try {
+            const response=await Users.findOne({
+                where:{
+                    email:email
+                }
+            });
+            console.log(response)
+            if(!response){
+                throw new AppError('user with credential not found in db',StatusCodes.BAD_REQUEST);
+            }
+            return response;
+        } catch (error) {
+            console.log(error);
+            if(error instanceof AppError){
+                throw error;
+            }
+            throw new AppError('Soemthing went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async getUser(id){
         try {
             const response=await Users.findByPk(id);
