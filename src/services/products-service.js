@@ -39,7 +39,7 @@ class ProductService {
 
   async getProducts(query) {
     try {
-      const response = await this.repository.getProducts(+query.limit,+query.offset || 0);
+      const response = await this.repository.getProducts(query);
       return response;
     } catch (error) {
       throw error;

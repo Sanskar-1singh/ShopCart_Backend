@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const AppError = require('../errors/app-error');
 const {Product,category}=require('../models');
 const logger = require('../config/logger-config');
-const { Model } = require('sequelize');
+const { Model, Op } = require('sequelize');
 
 class ProductRepository{
 
@@ -17,7 +17,26 @@ class ProductRepository{
          
     }
 
-    async getProducts(limit,offset){
+    async getProducts(query){
+        let customfilter={};
+        console.log("Query received:", query);
+
+        if (query.price) {
+            let obj=[];
+             obj = query.price.split("-");
+             console.log(obj)
+            let minPrice=Number(obj[0]);
+            let maxPrice=Number(obj[1]);
+          if(isNaN(minPrice)){
+            minPrice=undefined;
+          }
+          if(isNaN(maxPrice)){
+            maxPrice=undefined;
+          }
+            customfilter.price = {
+                [Op.between]: [((minPrice==undefined)?0:minPrice),((maxPrice==undefined)?1:maxPrice)]
+            };
+        }
         try {
             const queryOptions = {
                 include: [
@@ -26,15 +45,19 @@ class ProductRepository{
                         required: true,
                         as:'category_of_products'
                     }
-                ]
+                ],
             };
-
+          
             // Apply pagination only if limit is provided
-            if (!isNaN(limit)) {
-                queryOptions.limit = limit;
-                queryOptions.offset = offset || 0;
+            if (!isNaN(+query.limit)) {
+                queryOptions.limit = +query.limit;
+                queryOptions.offset = +query.offset || 0;
             }
-    
+             
+            if(isNaN(+query.limit) && !isNaN(+query.offset)){
+                queryOptions.offset = +query.offset;
+            }
+           queryOptions.where=customfilter;
             const response = await Product.findAll(queryOptions);
     
         if(response.length==0){
