@@ -2,7 +2,8 @@ const UserRepository=require('../repositories/user-repository');
 const UserService=require('../services/user-service');
 const {StatusCodes}=require('http-status-codes');
 const {SuccessReponse,ErrorReponse}=require('../utils/response-structure');
-const userService=new UserService(new UserRepository());
+const CartRepository = require('../repositories/cart-repository');
+const userService=new UserService(new UserRepository(),new CartRepository());
 
 async function getUsers(req,res){
     try {
@@ -40,6 +41,7 @@ async function signup(req,res){
     try {
         const response=await userService.createUser(req.body);
         SuccessReponse.message="Successfully created User with given details";
+       // console.log(response)
         SuccessReponse.data=response;
 
         return res.status(StatusCodes.OK).json(SuccessReponse);

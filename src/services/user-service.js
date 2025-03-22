@@ -4,8 +4,9 @@ const bcrypt=require('bcrypt');
 const { generateToken } = require('../utils/auth');
 
 class UserService{
-    constructor(repository){
+    constructor(repository,cartrepository){
         this.repository=repository;
+        this.cartrepository=cartrepository;
     }
 
 
@@ -30,6 +31,8 @@ class UserService{
     async createUser(data){
         try {
             const response=await this.repository.createUser({...data});
+            console.log(response.id);
+            const makingCart=await this.cartrepository.createcart({ UserId: response.id });
             return response;
         } catch (error) {
              if(error.name=='SequelizeValidationError'){
