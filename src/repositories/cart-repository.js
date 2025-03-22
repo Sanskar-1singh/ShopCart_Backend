@@ -1,5 +1,7 @@
-const {Cart}=require('../models');
+const {Cart,cart_products}=require('../models');
 const AppError=require('../errors/app-error');
+const { Op } = require('sequelize');
+const { StatusCodes } = require('http-status-codes');
 class CartRepository{
      
     async getCarts(){
@@ -42,6 +44,75 @@ class CartRepository{
         } catch (error) {
             console.log(error);
              throw error;
+        }
+    }
+
+    async updateCart(cartId,productId,shouldAddProduct=true){
+        try {
+             cartId=Number(cartId);
+             productId=Number(productId);
+             console.log(typeof cartId,typeof productId)
+            const result=await cart_products.findOne({
+                where:{
+                    [Op.and]:[
+                        {cartId:cartId},
+                        {productsId:productId}
+                    ]
+                }
+            });
+
+            if(shouldAddProduct){
+                //we want to add product to cart
+                if(!result){
+                    //the product was not yet added in the cart
+                    await cart_products.create({
+                        cartId:cartId,
+                        productsId:productId
+                    }); 
+                }
+                else{
+                    //the product was already in the cart and we want to increment the quantity
+                    await result.increment({quantity:1});
+                }
+            }
+            else{
+                //remove product from cart
+                if(!result){
+                    throw new AppError('product with product id is not found in cart',StatusCodes.NOT_FOUND);
+                }
+                if(result.quantity==1){
+                    await cart_products.destroy({
+                        where:{
+                            [Op.and]:[
+                                {cartId:cartId},
+                                {productsId:productId}
+                            ]
+                        }
+                    });
+                }
+                else{
+                    await result.increment({quantity:-1});
+                }
+            }
+
+            const response=await cart_products.findAll({
+                where:{
+                     [Op.and]:[
+                        {cartId:cartId},
+                        {productsId:productId}
+                     ]
+                }
+            });
+            return {
+                cartId:cartId,
+                products:response
+            }
+        } catch (error) {
+            console.log(error);
+            if(error instanceof AppError){
+                throw error;
+            }
+            throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const cart_products = require('./cart_products');
 module.exports = (sequelize, DataTypes) => {
   class Cart extends Model {
     /**
@@ -13,11 +14,13 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Users,{//how to think belongTo and hasMany or hasOne>>>
         foreignKey:'UserId',
       });
+      this.belongsToMany(models.Product, { through: models.cart_products, foreignKey: 'cartId' });
+
     }
   }
   Cart.init({
     UserId: {
-     type:DataTypes.NUMBER,
+     type:DataTypes.INTEGER,
      allowNull:false
     }
   }, {
