@@ -58,7 +58,7 @@ async function signin(req,res){
         SuccessReponse.message='Successfully user has sign in with creadentials';
         SuccessReponse.data=response;
           
-        res.cookie('x-access-token',response);
+        res.cookie('token',response);
         return res.status(StatusCodes.OK).json(SuccessReponse);
     } catch (error) {
         console.log(error);
