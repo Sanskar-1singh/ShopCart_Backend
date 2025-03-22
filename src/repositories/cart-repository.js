@@ -1,6 +1,6 @@
-const {Cart,cart_products}=require('../models');
+const {Cart,cart_products,Product}=require('../models');
 const AppError=require('../errors/app-error');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const { StatusCodes } = require('http-status-codes');
 class CartRepository{
      
@@ -47,10 +47,18 @@ class CartRepository{
         }
     }
 
-    async updateCart(cartId,productId,shouldAddProduct=true){
+    async updateCart(cartId,productId,shouldAddProduct){
         try {
              cartId=Number(cartId);
              productId=Number(productId);
+             const checkpresenceproduct=await Product.findOne({
+                where:{
+                    id:productId
+                }
+             });
+             if(!checkpresenceproduct){
+                throw new AppError('product with given id is not present in inventory',StatusCodes.NOT_FOUND);
+             }
              console.log(typeof cartId,typeof productId)
             const result=await cart_products.findOne({
                 where:{
@@ -58,9 +66,9 @@ class CartRepository{
                         {cartId:cartId},
                         {productsId:productId}
                     ]
-                }
+                },
             });
-
+            
             if(shouldAddProduct){
                 //we want to add product to cart
                 if(!result){
@@ -99,10 +107,10 @@ class CartRepository{
                 where:{
                      [Op.and]:[
                         {cartId:cartId},
-                        {productsId:productId}
                      ]
-                }
+                },
             });
+          console.log(response)
             return {
                 cartId:cartId,
                 products:response
