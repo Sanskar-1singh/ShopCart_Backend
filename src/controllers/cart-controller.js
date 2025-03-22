@@ -8,7 +8,7 @@ const cartService=new CartService(new CartRepository());
 async function updateCart(req,res){
     try {
         const shouldAddProduct=(req.body.shouldAddProduct==true || req.body.shouldAddProduct=='true')?true:false;
-        const response=await cartService.updateCart(req.params.id,req.body.productsId,shouldAddProduct);
+        const response=await cartService.updateCart(req.user.id,req.params.id,req.body.productsId,shouldAddProduct);
         SuccessReponse.message="Successfully updated cart with details";
         SuccessReponse.data=response;
 

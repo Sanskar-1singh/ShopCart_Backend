@@ -47,7 +47,7 @@ class CartRepository{
         }
     }
 
-    async updateCart(cartId,productId,shouldAddProduct){
+    async updateCart(userid,cartId,productId,shouldAddProduct){
         try {
              cartId=Number(cartId);
              productId=Number(productId);
@@ -56,8 +56,21 @@ class CartRepository{
                     id:productId
                 }
              });
+             const checkpresencecart=await Cart.findOne({
+                where:{
+                    id:cartId
+                }
+             });
+             if(!checkpresencecart){
+                throw new AppError('request with cart id is not found in DB',StatusCodes.NOT_FOUND);
+             }
+
              if(!checkpresenceproduct){
                 throw new AppError('product with given id is not present in inventory',StatusCodes.NOT_FOUND);
+             }
+
+             if(checkpresencecart.UserId!=userid){
+                throw new AppError('user is not authorised to update the cart',StatusCodes.UNAUTHORIZED);
              }
              console.log(typeof cartId,typeof productId)
             const result=await cart_products.findOne({
