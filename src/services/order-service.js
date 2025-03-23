@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const AppError = require("../errors/app-error");
-const order = require("../models/order");
+// const order = require("../models/order");
+
 
 class OrderService{
     constructor(respository,cartrepository){
@@ -73,11 +74,23 @@ class OrderService{
 
     async fetchOrderDeatils(userId,orderId){
         try {
+
+            const checkOrder=await this.respository.getOrder(orderId);
+            if(!checkOrder){
+                throw new AppError('Order with given id did not exists',StatusCodes.BAD_REQUEST);
+            }
+
+            if(checkOrder.userId!=userId){
+                throw new AppError('user is not authorised to do it',StatusCodes.UNAUTHORIZED);
+            }
             const response=await this.respository.fetchOrderdetails(userId,orderId);
             const order={id:response[0].id,status:response[0].status,createdAt:response[0].createdAt,updatedAt:response[0].updatedAt};
             
-            //console.log(response[0].Products)
+            //console.log(response[0].Products)  FOR DEBUGGING
+
+            let valueofOrder=0;
             order.products=response[0].Products.map(product=>{
+                valueofOrder+=product.price*product.Order_products.quantity
                 return {
                     title:product.title,
                     price:product.price,
@@ -86,11 +99,15 @@ class OrderService{
                     quantity:product.Order_products.quantity
                 }
             });
+            order.totalPrice=valueofOrder;
             console.log("the orddr",order)
 
             return order;
         } catch (error) {
-            throw error;
+            if(error instanceof AppError){
+                throw error;
+            }
+            throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
         }
     }
 }
