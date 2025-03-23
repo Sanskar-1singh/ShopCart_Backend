@@ -70,6 +70,29 @@ class OrderService{
             throw error;
         }
     }
+
+    async fetchOrderDeatils(userId,orderId){
+        try {
+            const response=await this.respository.fetchOrderdetails(userId,orderId);
+            const order={id:response[0].id,status:response[0].status,createdAt:response[0].createdAt,updatedAt:response[0].updatedAt};
+            
+            //console.log(response[0].Products)
+            order.products=response[0].Products.map(product=>{
+                return {
+                    title:product.title,
+                    price:product.price,
+                    image:product.image,
+                    id:product.id,
+                    quantity:product.Order_products.quantity
+                }
+            });
+            console.log("the orddr",order)
+
+            return order;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports=OrderService;

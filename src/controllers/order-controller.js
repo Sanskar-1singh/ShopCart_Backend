@@ -23,6 +23,24 @@ async function createOrder(req,res){
     }
 }
 
+async function fetchOrderDeatils(req,res){
+    try {
+        console.log(req.user.id)
+        const response=await orderservice.fetchOrderDeatils(req.user.id,req.params.id);
+        SuccessReponse.message='Successfully fetched a order details';
+        console.log(response)
+        SuccessReponse.data=response;
+
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+          ErrorReponse.message='Something went wrong';
+          ErrorReponse.data=error;
+
+          return res.status(error.StatusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
 module.exports={
-    createOrder
+    createOrder,
+    fetchOrderDeatils
 }

@@ -1,4 +1,4 @@
-const {Order,Order_products}=require('../models');
+const {Order,Order_products,Product}=require('../models');
 
 class OrderRepository{
     async getOrders(){
@@ -33,6 +33,31 @@ class OrderRepository{
     async addOrderProductInBulk(ordersProducts){
         try {
             const response=await Order_products.bulkCreate(ordersProducts);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async fetchOrderdetails(userId,orderId){
+        try {
+            const response=await Order.findAll({
+                 where:{
+                    id:orderId
+                 },
+                 include:[
+                    {
+                        model:Product,
+                        attributes:['title','id','price','image'],
+                        through:{
+                            model:Order_products,
+                            attributes:['quantity']
+                        }
+                    }
+                 ],
+                 attributes:['id','status','createdAt','updatedAt'] 
+            });
+            console.log(response);
             return response;
         } catch (error) {
             throw error;
