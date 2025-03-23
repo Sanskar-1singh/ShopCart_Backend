@@ -191,12 +191,27 @@ class CartRepository{
                 cartId:cartid
             }
         });
+
         return response;
     } catch (error) {
         if(error instanceof AppError){
             throw error;
         }
         throw new AppError('Somrthing went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+   }
+
+
+   async getcartbyuser(userid){
+    try {
+        const response=await Cart.findOne({
+            where:{
+                UserId:userid
+            }
+        });
+        return response;
+    } catch (error) {
+        throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
     }
    }
 }

@@ -9,16 +9,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      orderId: {
+      OrderId: {
         type: Sequelize.INTEGER,
         allowNull:false,
         references:{
           model:'Orders',
-          key:'id'
+          key:'id' 
         },
         onDelete:'CASCADE'
       },
-      productId: {
+      ProductId: {
         type: Sequelize.INTEGER,
         allowNull:false,
         references:{

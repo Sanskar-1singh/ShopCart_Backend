@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Order_products.init({
-    orderId: {
+    OrderId: {
       type:DataTypes.INTEGER,
       allowNull:false
     },
-    productId: {
+    ProductId: {
       type:DataTypes.INTEGER,
       allowNull:false
     },
