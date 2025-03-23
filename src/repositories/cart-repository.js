@@ -72,6 +72,7 @@ class CartRepository{
              if(checkpresencecart.UserId!=userid){
                 throw new AppError('user is not authorised to update the cart',StatusCodes.UNAUTHORIZED);
              }
+             console.log("hello")
              console.log(typeof cartId,typeof productId)
             const result=await cart_products.findOne({
                 where:{
@@ -81,7 +82,7 @@ class CartRepository{
                     ]
                 },
             });
-            
+            console.log(shouldAddProduct)
             if(shouldAddProduct){
                 //we want to add product to cart
                 if(!result){
@@ -137,6 +138,67 @@ class CartRepository{
         }
     }
 
+    async getcartwithProducts(Cartid,UserIdclient){
+        try {
+
+         const cartcheck=await Cart.findOne({
+            where:{
+                id:Cartid
+            }
+         });
+
+         if(!cartcheck){
+            throw new AppError('Cart did not exits',StatusCodes.NOT_FOUND);
+         }
+
+         if(cartcheck.UserId!=UserIdclient){
+                throw new AppError('User with cart id is not authorised',StatusCodes.UNAUTHORIZED);
+         }
+            const response=await cart_products.findAll({
+                where:{
+                    cartId:Cartid
+                }
+            });
+                return response;
+
+        } catch (error) {
+            console.log(error);
+            if(error instanceof AppError){
+                throw error;
+            }
+            throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+   async clearCart(cartid,userid){
+    try {
+         
+        const cartcheck=await  Cart.findOne({
+            where:{
+                id:cartid
+            }
+        });
+         
+        if(!cartcheck){
+            throw new AppError('cart did not exitsin Db',StatusCodes.NOT_FOUND);
+        }
+
+        if(cartcheck.UserId!=userid){
+            throw new AppError('User not authorised to do this',StatusCodes.UNAUTHORIZED);
+        } 
+        const response=await cart_products.destroy({
+            where:{
+                cartId:cartid
+            }
+        });
+        return response;
+    } catch (error) {
+        if(error instanceof AppError){
+            throw error;
+        }
+        throw new AppError('Somrthing went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+   }
 }
 
 module.exports=CartRepository;

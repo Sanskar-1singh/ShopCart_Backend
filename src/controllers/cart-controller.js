@@ -22,6 +22,39 @@ async function updateCart(req,res){
     }
 }
 
+
+async function getCartWithProducts(req,res){
+    try {
+        const response=await cartService.getcartwithproducts(req.params.id,req.user.id);
+        SuccessReponse.message='Successfully fetched all the products present in cart';
+        SuccessReponse.data=response;
+
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        ErrorReponse.message='Something went wrong';
+        ErrorReponse.data=error;
+
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
+
+async function clearCart(req,res){
+    try {
+        console.log(req.params.id,req.user.id)
+        const response=await cartService.clearCartProducts(req.params.id,req.user.id);
+        SuccessReponse.message='Successfully deleted all the product from cart';
+        SuccessReponse.data=response;
+        
+        return res.status(StatusCodes.OK).json(SuccessReponse);
+    } catch (error) {
+        ErrorReponse.message='Soemthing went wrong';
+        ErrorReponse.data=error;
+
+        return res.status(error.statusCode || StatusCodes.BAD_REQUEST).json(ErrorReponse);
+    }
+}
 module.exports={
-    updateCart
+    updateCart,
+    getCartWithProducts,
+    clearCart
 }

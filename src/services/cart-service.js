@@ -11,6 +11,24 @@ class CartService{
              throw error;
         }
     }
+
+    async getcartwithproducts(cartId,userId){
+        try {
+            const response=await this.repository.getcartwithProducts(cartId,userId);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async clearCartProducts(cartid,userid){
+        try {
+            const response=await this.repository.clearCart(cartid,userid);
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 module.exports=CartService;
