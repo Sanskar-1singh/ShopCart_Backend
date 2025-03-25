@@ -64,14 +64,13 @@ class UserService{
         try {
             const response=await this.repository.getUserByemail(data.email); 
             if(!response){
-                throw new AppError('User did not found in DB',StatusCodes.NOT_FOUND);
+               throw new AppError('User did not found in DB',StatusCodes.NOT_FOUND);
             }
               const ispasswordMatch=bcrypt.compareSync(data.password,response.password);
               console.log("hello",response)
               if(!ispasswordMatch){
                  throw new AppError('Password did not match.TRY AGAIN',StatusCodes.BAD_REQUEST);
               }
-              
               const token = generateToken({ email: response.email, id: response.id });
               return token;
 
