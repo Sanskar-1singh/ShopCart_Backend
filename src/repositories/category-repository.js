@@ -42,16 +42,18 @@ class CategoryRepository{
     async createCategory(data){
             try {
                 const response=await category.create(data);
-                console.log("the resposne is",response);
+                //console.log("the resposne is",response);
                 if(!response){
                     throw new AppError('cannot create the new category with same category name',StatusCodes.BAD_REQUEST);
                 }
+                console.log(response);
                 return response;
             } catch (error) {
                 console.log(error);
                 if(error instanceof AppError){
                    throw error;
                 }
+                console.log( 'the name id',error.name);
                 throw new AppError('Something went wrong',StatusCodes.INTERNAL_SERVER_ERROR);
             }
            

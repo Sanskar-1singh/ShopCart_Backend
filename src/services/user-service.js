@@ -63,6 +63,9 @@ class UserService{
     async signinUser(data){
         try {
             const response=await this.repository.getUserByemail(data.email); 
+            if(!response){
+                throw new AppError('User did not found in DB',StatusCodes.NOT_FOUND);
+            }
               const ispasswordMatch=bcrypt.compareSync(data.password,response.password);
               console.log("hello",response)
               if(!ispasswordMatch){
